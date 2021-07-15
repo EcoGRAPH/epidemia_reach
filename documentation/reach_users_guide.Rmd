@@ -1,0 +1,173 @@
+---
+title: "REACH: Retrieving Environmental Analytics for Climate and Health  \nUser's Guide" 
+author: |
+  | Dawn Nekorchuk and Michael C. Wimberly   
+  | dawn.nekorchuk@ou.edu; mcwimberly@ou.edu 
+  | Department of Geography and Environmental Sustainability, University of Oklahoma
+date: "Updated 30 June 2020"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#temp saved ref
+#date: "Updated `r format(Sys.time(), '%B %d, %Y')`"
+```
+
+\newpage
+
+# Initial Set-up
+
+## Accounts and Software
+
+### Google Earth Engine Account
+
+Our Retrieving Environmental Analytics for Climate and Health (REACH) applications gathers environmental data via Google Earth Engine (GEE). GEE is a cloud-based platform for hosting satellite imagery. GEE also provides tools to process these remote sensing images and other geospatial datasets. Instead of downloading the raw satellite files and processing them on your own computer, which requires significant internet bandwidth and processing power, these steps are done in the cloud. And at the end, we only need to download the summarized output. 
+
+1. Request a GEE account: sign up at https://earthengine.google.com/.
+If you do not already have a Google Account, it will prompt you to make one. Your Google account will also contain a Google Drive account, which is where the GEE data will be downloaded to. 
+
+2. Wait for the account confirmation email in your gmail account. 
+
+Optional:  You can access your drive online at https://www.google.com/drive/. Or you can download a desktop app https://www.google.com/drive/download/ and use it like a folder on your computer. 
+
+
+### R and Python Software
+
+If you are using the python package with associated R script to call it, you will also need the following software installed: 
+
+* R: https://www.r-project.org/
+
+* RStudio: https://rstudio.com/products/rstudio/download/
+
+* Anaconda: https://www.anaconda.com/products/individual
+
+
+## REACH tools set-up
+
+
+### Github repository epidemia_reach 
+
+The repository that contains this documentation: https://github.com/EcoGRAPH/epidemia_reach. This contains code for the GEE Code Editor, and sample scripts for the epidemia_gee python package called from R. 
+
+#### Javascript into the GEE Code Editor
+
+1. In the epidemia_reach repository there is a .js file (e.g. EPIDEMIA_REACH_v3.2_Ethiopia.js). This contains the latest version of the GEE Javascript script.
+
+2. Navigate to https://code.earthengine.google.com/
+
+3. In the "New Script" center section of the page, copy and paste the text of the script. Click on save, and name it the same as the text file (or another name of your choosing).
+
+```{r echo = FALSE, out.width = "75%"}
+knitr::include_graphics("figs/GEE_newscript.jpg")
+```
+
+4. Alternatively, use the "New ... File" option in the left-hand Scripts pane to create an empty script. Click on the new script in the Scripts pane and then copy in the contents of the .js file. 
+
+
+
+### Github repository epidemia_gee (python package)
+
+#### Anaconda set-up
+First, we will set up and activate a conda environment, then install the epidemia_gee and Earth Engine packages.
+
+1. Open the “Anaconda Prompt” (Windows; and “Terminal” for MacOS) and enter in the following commands:
+
+2. Create a conda environment:
+
+    `conda create --name gee-demo`
+
+3. Activate the environment:
+
+    `conda activate gee-demo`
+
+4. Install git pip, which we will use to install the epidemia-gee package
+
+    `conda install git pip`
+    
+    And proceed (`y`) with installation of any other packages that it wishes to do.
+
+5. Install the epidemia-gee package
+
+    `pip install git+https://github.com/EcoGRAPH/epidemia_gee.git`
+
+6. Install the Earth Engine package in the gee-demo environment
+
+    `conda install -c conda-forge earthengine-api`
+
+7. And finally, authenticate with your Earth Engine account
+
+    `earthengine authenticate`
+
+This will open a browser window for you to log into the Google Earth Engine Python Authenticator, click Allow, and you receive an authorization token code to paste back into the Anaconda Prompt.
+After you paste in the token and it has successfully saved, you may close the Anaconda Prompt.
+
+Note: if you need to update epidemia-gee:
+From the Anaconda Terminal you will active the conda environment and then uninstall and re-install the package.
+* `conda activate gee-demo`
+* `pip uninstall Epidemia`
+* `pip install git+https://github.com/EcoGRAPH/epidemia_gee.git`
+
+
+
+# Using the REACH tools
+
+## Code Editor
+
+1. Navigate to https://code.earthengine.google.com/. 
+
+2. On the left-hand scripts pane, click on the script that you saved during set-up. Once that the script is loaded in the center script pane, click on "Run". 
+
+```{r echo = FALSE, out.width = "75%"}
+#knitr::include_graphics("figs/GEE_run_script.JPG")
+```
+
+3. In the new "Retrieving Environmental Analytics for Climate and Health (REACH)" pane on the left-hand in the bottom section, select the desired start and end dates. 
+
+  + **Note**:  Some variables lag, due to time needed for compiling and processing of certain indices, so the latest available data may be a few days or weeks delayed, and this will vary by data product / set of environmental variables. If you are using the EPIDEMIA system, those scripts will merge any overlapping data, and it is important to note that gaps in data are not allowed.
+
+```{r echo = FALSE, out.width = "100%"}
+#knitr::include_graphics("figs/GEE_downloadsummary.JPG")
+```
+
+
+4. In the section '2. Calculate environmental variables for selected dates', clicking the "Click to summarize" button will add tasks to the "Tasks" tab in the upper-right pane. Besides each task is a blue button "Run". Click run for each of the three tasks (Spectral, LST, Precip).  
+
+```{r echo = FALSE, out.width = "60%"}
+#knitr::include_graphics("figs/GEE_tasks.JPG")
+```
+
+5. In the window that pops up, click Run. 
+
+  + The GEE script will automatically add two dates (YYYY-MM-DD) to the end of the filename. These are the date range of data inside the file. For example, `Export_LST_Data_2020-07-01_2021-06-20` means that it contains LST data starting 01 July 2020 and ending 20 June 2021. 
+
+  + GEE will generate the summary, and download the csv file to your Google drive.
+
+## REACH App
+
+We have also created a web-based GEE app based on the above Javascript code. A Google or GEE account is NOT required, however, it is only able to downloading a few weeks to months of data at a time. 
+
+1. Navigate to https://dawneko.users.earthengine.app/view/epidemiar-ethiopia-demo
+
+2. In the left-hand pane "Retrieving Environmental Analytics for Climate and Health (REACH)", enter in the desired start and end dates. The default dates are the last four weeks (to current day). 
+
+  + **Note**:  Some variables lag, due to time needed for compiling and processing of certain indices, so the latest available data may be a few days or weeks delayed, and this will vary by data product / set of environmental variables. If you are using the EPIDEMIA system, those scripts will merge any overlapping data, and it is important to note that gaps in data are not allowed.
+
+3. In the section '2. Calculate environmental variables for selected dates', click the "Click to summarize" button and then wait for processing to happen in the background. You only need to click once, and it will take several seconds (10 - 15 seconds). 
+
+4. New sections will appear in the bottom of the left-hand pane. Click on the button labeled '3. Get download links for woreda summary CSV files' and wait for a new section to appear. 
+
+5. In the new download inset panel, there will be links to each of the three requested datasets ('Precipitation', 'Land Surface Temperatures', 'Spectral Indicies'). Click on the links, one at a time, to download them from your browser. 
+
+
+## R - Python
+
+<!-- WRITE ME <<>> -->
+
+
