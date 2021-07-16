@@ -1,10 +1,10 @@
 ---
-title: "REACH: Retrieving Environmental Analytics for Climate and Health  \nUser's Guide" 
+title: "REACH  \nRetrieving Environmental Analytics for Climate and Health  \nUser's Guide" 
 author: |
   | Dawn Nekorchuk and Michael C. Wimberly   
   | dawn.nekorchuk@ou.edu; mcwimberly@ou.edu 
   | Department of Geography and Environmental Sustainability, University of Oklahoma
-date: "Updated 30 June 2020"
+date: "Updated 16 July 2021"
 output: 
   pdf_document:
     toc: true
@@ -22,13 +22,26 @@ knitr::opts_chunk$set(echo = TRUE)
 
 \newpage
 
+# Introduction
+
+Our Retrieving Environmental Analytics for Climate and Health (REACH) applications gathers environmental data via Google Earth Engine (GEE). GEE is a cloud-based platform for hosting satellite imagery. GEE also provides tools to process these remote sensing images and other geospatial datasets. Instead of attempting to download the raw satellite files and processing them on a personal own computer, which requires significant internet bandwidth and processing power, these steps are done in the cloud. By using GEE, we only need to download the summarized output. 
+This workflow was initially developed to support the implementation of the EPIDEMIA malaria early warning system in the Amhara region of Ethiopia. EPIDEMIA is implemented in the R language and environmental for statistical computing and provides tools for data processing and harmonization, malaria forecasting, accuracy assessment, and formatted report generation.
+
+The REACH applications now generate daily summaries of satellite remote sensing data for every woreda (district) in Ethiopia. 
+
+```{r echo = FALSE, out.width = "100%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_Fig1_flowchart_color_v3.jpg")
+```
+
+Flow diagram of REACH data processing for each of the three main sets of data: global precipitation measurement (GPM, using the IMERG6 product), spectral indices using the MODIS bidirectional reflectance distribution function (BRDF), and land surface temperature (LST) from the MODIS Terra 8-day product. The only required user input is the desired range of dates for which to gather the environmental data. The summarized output dataset from REACH feeds into the EPIDEMIA forecasting system as one of the main input data sources along with epidemiological surveillance data and is used to help create malaria early detection and early warning forecast reports.
+
 # Initial Set-up
 
 ## Accounts and Software
 
 ### Google Earth Engine Account
 
-Our Retrieving Environmental Analytics for Climate and Health (REACH) applications gathers environmental data via Google Earth Engine (GEE). GEE is a cloud-based platform for hosting satellite imagery. GEE also provides tools to process these remote sensing images and other geospatial datasets. Instead of downloading the raw satellite files and processing them on your own computer, which requires significant internet bandwidth and processing power, these steps are done in the cloud. And at the end, we only need to download the summarized output. 
+A Google Earth Engine (GEE) account is free, you just need a Google account and request a GEE account. 
 
 1. Request a GEE account: sign up at https://earthengine.google.com/.
 If you do not already have a Google Account, it will prompt you to make one. Your Google account will also contain a Google Drive account, which is where the GEE data will be downloaded to. 
@@ -64,12 +77,17 @@ The repository that contains this documentation: https://github.com/EcoGRAPH/epi
 
 3. In the "New Script" center section of the page, copy and paste the text of the script. Click on save, and name it the same as the text file (or another name of your choosing).
 
-```{r echo = FALSE, out.width = "75%"}
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
 knitr::include_graphics("figs/GEE_newscript.jpg")
 ```
 
 4. Alternatively, use the "New ... File" option in the left-hand Scripts pane to create an empty script. Click on the new script in the Scripts pane and then copy in the contents of the .js file. 
 
+After saving, the script will be accessible under your account (most likely under owner/username/default, unless you saved it elsewhere).
+
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_js_1_pre-run_edited.jpg")
+```
 
 
 ### Github repository epidemia_gee (python package)
@@ -110,10 +128,14 @@ After you paste in the token and it has successfully saved, you may close the An
 
 Note: if you need to update epidemia-gee:
 From the Anaconda Terminal you will active the conda environment and then uninstall and re-install the package.
+
 * `conda activate gee-demo`
 * `pip uninstall Epidemia`
 * `pip install git+https://github.com/EcoGRAPH/epidemia_gee.git`
 
+You may also then need to re-authenticate:
+
+* `earthengine authenticate`
 
 
 # Using the REACH tools
@@ -124,23 +146,25 @@ From the Anaconda Terminal you will active the conda environment and then uninst
 
 2. On the left-hand scripts pane, click on the script that you saved during set-up. Once that the script is loaded in the center script pane, click on "Run". 
 
-```{r echo = FALSE, out.width = "75%"}
-#knitr::include_graphics("figs/GEE_run_script.JPG")
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_js_1_pre-run_edited_run.jpg")
 ```
 
-3. In the new "Retrieving Environmental Analytics for Climate and Health (REACH)" pane on the left-hand in the bottom section, select the desired start and end dates. 
+3. In the new "Retrieving Environmental Analytics for Climate and Health (REACH)" pane on the left-hand in the bottom section, select the desired start and end dates (circled in red in the image below). 
 
-  + **Note**:  Some variables lag, due to time needed for compiling and processing of certain indices, so the latest available data may be a few days or weeks delayed, and this will vary by data product / set of environmental variables. If you are using the EPIDEMIA system, those scripts will merge any overlapping data, and it is important to note that gaps in data are not allowed.
+  + Note: Some variables may not be available up to today's date, due to time needed for compiling and processing of certain indices, so the latest available data may be a few days or weeks delayed, and this will vary by data product / set of environmental variables.
+  
+  + If you are using the EPIDEMIA system, those scripts will merge any overlapping data, and it is important to note that gaps in data are not allowed.
 
-```{r echo = FALSE, out.width = "100%"}
-#knitr::include_graphics("figs/GEE_downloadsummary.JPG")
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_js_2_pre-summarize_marked.jpg")
 ```
 
 
-4. In the section '2. Calculate environmental variables for selected dates', clicking the "Click to summarize" button will add tasks to the "Tasks" tab in the upper-right pane. Besides each task is a blue button "Run". Click run for each of the three tasks (Spectral, LST, Precip).  
+4. In the section '2. Calculate environmental variables for selected dates', clicking the "Click to summarize" button (circled in orange in previous image) will add tasks to the "Tasks" tab in the upper-right pane. Besides each task is a blue button "Run". Click run for each of the three tasks (Spectral, LST, Precip).  
 
-```{r echo = FALSE, out.width = "60%"}
-#knitr::include_graphics("figs/GEE_tasks.JPG")
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_js_3_tasks_fullshot_edited_marked.jpg")
 ```
 
 5. In the window that pops up, click Run. 
@@ -155,19 +179,44 @@ We have also created a web-based GEE app based on the above Javascript code. A G
 
 1. Navigate to https://dawneko.users.earthengine.app/view/epidemiar-ethiopia-demo
 
-2. In the left-hand pane "Retrieving Environmental Analytics for Climate and Health (REACH)", enter in the desired start and end dates. The default dates are the last four weeks (to current day). 
+2. In the left-hand pane "Retrieving Environmental Analytics for Climate and Health (REACH)", enter in the desired start and end dates (circled in red in the image below). The default dates are the last four weeks (to current day). 
 
-  + **Note**:  Some variables lag, due to time needed for compiling and processing of certain indices, so the latest available data may be a few days or weeks delayed, and this will vary by data product / set of environmental variables. If you are using the EPIDEMIA system, those scripts will merge any overlapping data, and it is important to note that gaps in data are not allowed.
+  + Note: Some variables may not be available up to today's date, due to time needed for compiling and processing of certain indices, so the latest available data may be a few days or weeks delayed, and this will vary by data product / set of environmental variables.
+  
+  + If you are using the EPIDEMIA system, those scripts will merge any overlapping data, and it is important to note that gaps in data are not allowed.
 
-3. In the section '2. Calculate environmental variables for selected dates', click the "Click to summarize" button and then wait for processing to happen in the background. You only need to click once, and it will take several seconds (10 - 15 seconds). 
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_app_pre-summarize_marked.jpg")
+```
+
+3. In the section '2. Calculate environmental variables for selected dates', click the "Click to summarize" button (circled in orange in previous image) and then wait for processing to happen in the background. You only need to click once, and it will take several seconds (10 - 15 seconds). 
 
 4. New sections will appear in the bottom of the left-hand pane. Click on the button labeled '3. Get download links for woreda summary CSV files' and wait for a new section to appear. 
 
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_app_precip_v2-partsidebar_marked.jpg")
+```
+
 5. In the new download inset panel, there will be links to each of the three requested datasets ('Precipitation', 'Land Surface Temperatures', 'Spectral Indicies'). Click on the links, one at a time, to download them from your browser. 
+
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_app_precip_fullsidebar_marked.jpg")
+```
 
 
 ## R - Python
 
-<!-- WRITE ME <<>> -->
+The python version is a custom python package that we call from R via the R package reticulate. 
 
+1. Open RStudio, and then the EPIDEMIA_GEE_python.R script.
+
+2. Run the script to the `eth_gee$Et$gee_to_drive()` calls. This section of code we just ran will let us get access to our python function `gee_to_drive()`.
+
+3. In the `gee_to_drive()` function call, update the start and end date for the data request. The dates are in 'YYYY-MM-DD' format. 
+
+  * e.g. `eth_gee$Et$gee_to_drive('2021-06-01','2021-06-30')` is for a start date of June 1, 2021 & end date of June 30, 2021
+
+4. The three resulting .csv files will be downloaded to an "Ethiopiadata" folder in the Google Drive of the authenticated account.
+
+  * The file names will lead with 'precip' for precipitation, 'lst' for land surface temperatures, and 'brdf' for the spectral indicies. The rest of the file names will be the start and end dates. 
 
