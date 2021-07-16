@@ -22,26 +22,26 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(reticulate)
 
 #use the conda environment we set up earlier in Anaconda
-use_condaenv("gee-demo", conda = "auto", required = TRUE)
+reticulate::use_condaenv("gee-demo", conda = "auto", required = TRUE)
 
 #import the Earth Engine library
-ee <- import("ee")          
+ee <- reticulate::import("ee")          
 #authenticate
 ee$Initialize()
 
 #import the epidemia-gee package
-eth_gee <- import("Ethiopia")  
+eth_gee <- reticulate::import("Ethiopia")  
 
 #Now we have access to the gee_to_drive() function
-#   which accepts a start and end date
+#   which accepts a start and end date in 'YYYY-MM-DD' format
 #   and requests our daily summarized data for that range.
-# The resulting .csv file will be downloaded to an "Ethiopiadata" folder 
+# The three resulting .csv files will be downloaded to an "Ethiopiadata" folder 
 #   in the Google Drive of the authenticated account.
 
-#example 1: start date of Jan 1, 2009 & end date of Feb 1, 2009
-eth_gee$Et$gee_to_drive('2009-01-01','2009-02-01')  
+#example 1: short time range
+# start date of June 1, 2021 & end date of June 30, 2021
+eth_gee$Et$gee_to_drive('2021-06-01','2021-06-30')  
 
-#example 2: start date of April 23, 2019 & end date of June 1, 2020
-eth_gee$Et$gee_to_drive('2019-04-23','2020-06-01') 
-
-
+#example 2: long time range
+# start date of January 1, 2010 & end date of December 31, 2020
+eth_gee$Et$gee_to_drive('2010-01-01','2020-12-31') 
