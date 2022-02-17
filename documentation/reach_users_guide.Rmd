@@ -4,7 +4,7 @@ author: |
   | Dawn Nekorchuk and Michael C. Wimberly   
   | dawn.nekorchuk@ou.edu; mcwimberly@ou.edu 
   | Department of Geography and Environmental Sustainability, University of Oklahoma
-date: "Updated 16 July 2021"
+date: "Updated 15 February 2022"
 output: 
   pdf_document:
     toc: true
@@ -24,10 +24,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-Our Retrieving Environmental Analytics for Climate and Health (REACH) applications gathers environmental data via Google Earth Engine (GEE). GEE is a cloud-based platform for hosting satellite imagery. GEE also provides tools to process these remote sensing images and other geospatial datasets. Instead of attempting to download the raw satellite files and processing them on a personal own computer, which requires significant internet bandwidth and processing power, these steps are done in the cloud. By using GEE, we only need to download the summarized output. 
+Our Retrieving Environmental Analytics for Climate and Health (REACH) applications gathers environmental data via Google Earth Engine (GEE). GEE is a cloud-based platform for hosting satellite imagery (and other Earth observation data). GEE also provides tools to process these remote sensing images and other geospatial datasets. Instead of attempting to download the raw satellite files and processing them on a local computer, which requires significant internet bandwidth and processing power, these steps are done in the cloud. By using GEE, we only need to download the summarized output. 
 This workflow was initially developed to support the implementation of the EPIDEMIA malaria early warning system in the Amhara region of Ethiopia. EPIDEMIA is implemented in the R language and environmental for statistical computing and provides tools for data processing and harmonization, malaria forecasting, accuracy assessment, and formatted report generation.
 
-The REACH applications now generate daily summaries of satellite remote sensing data for every woreda (district) in Ethiopia. 
+The updated REACH applications now generate daily summaries of satellite remote sensing data for every woreda (district) in Ethiopia. 
 
 ```{r echo = FALSE, out.width = "100%", fig.align = 'center'}
 knitr::include_graphics("figs/REACH_Fig1_flowchart_color_v3.jpg")
@@ -71,14 +71,14 @@ The repository that contains this documentation: https://github.com/EcoGRAPH/epi
 
 #### Javascript into the GEE Code Editor
 
-1. In the epidemia_reach repository there is a .js file (e.g. EPIDEMIA_REACH_v3.2_Ethiopia.js). This contains the latest version of the GEE Javascript script.
+1. In the epidemia_reach repository there is a .js file (EPIDEMIA_REACH_v3.3_Ethiopia.js). This contains the latest version of the GEE Javascript script.
 
 2. Navigate to https://code.earthengine.google.com/
 
 3. In the "New Script" center section of the page, copy and paste the text of the script. Click on save, and name it the same as the text file (or another name of your choosing).
 
 ```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
-knitr::include_graphics("figs/GEE_newscript.jpg")
+knitr::include_graphics("figs/REACH_guide_ce_0_newscript.jpg")
 ```
 
 4. Alternatively, use the "New ... File" option in the left-hand Scripts pane to create an empty script. Click on the new script in the Scripts pane and then copy in the contents of the .js file. 
@@ -86,7 +86,7 @@ knitr::include_graphics("figs/GEE_newscript.jpg")
 After saving, the script will be accessible under your account (most likely under owner/username/default, unless you saved it elsewhere).
 
 ```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
-knitr::include_graphics("figs/REACH_js_1_pre-run_edited.jpg")
+knitr::include_graphics("figs/REACH_guide_ce_1_prerun_blurred.jpg")
 ```
 
 
@@ -147,31 +147,40 @@ You may also then need to re-authenticate:
 2. On the left-hand scripts pane, click on the script that you saved during set-up. Once that the script is loaded in the center script pane, click on "Run". 
 
 ```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
-knitr::include_graphics("figs/REACH_js_1_pre-run_edited_run.jpg")
+knitr::include_graphics("figs/REACH_guide_ce_2_run.jpg")
 ```
 
 3. In the new "Retrieving Environmental Analytics for Climate and Health (REACH)" pane on the left-hand in the bottom section, select the desired start and end dates (circled in red in the image below). 
+
+  + You can ignore the recommendation on shorter time lengths here. The Code Editor version does not have a time limitation, only the app version (described later). 
 
   + Note: Some variables may not be available up to today's date, due to time needed for compiling and processing of certain indices, so the latest available data may be a few days or weeks delayed, and this will vary by data product / set of environmental variables.
   
   + If you are using the EPIDEMIA system, those scripts will merge any overlapping data, and it is important to note that gaps in data are not allowed.
 
 ```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
-knitr::include_graphics("figs/REACH_js_2_pre-summarize_marked.jpg")
+knitr::include_graphics("figs/REACH_guide_ce_3_presummarize.jpg")
 ```
 
 
 4. In the section '2. Calculate environmental variables for selected dates', clicking the "Click to summarize" button (circled in orange in previous image) will add tasks to the "Tasks" tab in the upper-right pane. Besides each task is a blue button "Run". Click run for each of the three tasks (Spectral, LST, Precip).  
 
 ```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
-knitr::include_graphics("figs/REACH_js_3_tasks_fullshot_edited_marked.jpg")
+knitr::include_graphics("figs/REACH_guide_ce_4_tasks.jpg")
 ```
 
 5. In the window that pops up, click Run. 
 
-  + The GEE script will automatically add two dates (YYYY-MM-DD) to the end of the filename. These are the date range of data inside the file. For example, `Export_LST_Data_2020-07-01_2021-06-20` means that it contains LST data starting 01 July 2020 and ending 20 June 2021. 
+  + The GEE script will automatically add two dates (YYYY-MM-DD) to the end of the filename. These are the date range of data inside the file. For example, `Export_LST_Data_2022-01-18_2022-02-09` means that it contains LST data starting 18 January 2022 and ending 9 February 2022. 
 
   + GEE will generate the summary, and download the csv file to your Google drive.
+
+6. Optional: The script can also be used to visualize a subset of pre-summarized environmental variables. Under section 2, there is an UI tool (circled in red in the screenshot below) to pick a date within the input range. This will display the environmental data on the map pane on the right. You can use the 'Layers' drop down menu (circled in orange) to pick which variable to display. Below, LST mean is shown for 1 February 2022. 
+
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_guide_ce_5_visualize.jpg")
+```
+
 
 ## REACH App
 
@@ -186,7 +195,7 @@ We have also created a web-based GEE app based on the above Javascript code. A G
   + If you are using the EPIDEMIA system, those scripts will merge any overlapping data, and it is important to note that gaps in data are not allowed.
 
 ```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
-knitr::include_graphics("figs/REACH_app_pre-summarize_marked.jpg")
+knitr::include_graphics("figs/REACH_guide_app_1_presummarize.jpg")
 ```
 
 3. In the section '2. Calculate environmental variables for selected dates', click the "Click to summarize" button (circled in orange in previous image) and then wait for processing to happen in the background. You only need to click once, and it will take several seconds (10 - 15 seconds). 
@@ -194,13 +203,19 @@ knitr::include_graphics("figs/REACH_app_pre-summarize_marked.jpg")
 4. New sections will appear in the bottom of the left-hand pane. Click on the button labeled '3. Get download links for woreda summary CSV files' and wait for a new section to appear. 
 
 ```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
-knitr::include_graphics("figs/REACH_app_precip_v2-partsidebar_marked.jpg")
+knitr::include_graphics("figs/REACH_guide_app_2_postsum_getlinks.jpg")
 ```
 
 5. In the new download inset panel, there will be links to each of the three requested datasets ('Precipitation', 'Land Surface Temperatures', 'Spectral Indicies'). Click on the links, one at a time, to download them from your browser. 
 
 ```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
-knitr::include_graphics("figs/REACH_app_precip_fullsidebar_marked.jpg")
+knitr::include_graphics("figs/REACH_guide_app_3_downloadlinks.jpg")
+```
+
+6. Optional: The app can also be used to visualize a subset of pre-summarized environmental variables. Under section 2, there is an UI tool (circled in red in the screenshot below) to pick a date within the input range. This will display the environmental data on the map pane on the right. You can use the 'Layers' drop down menu (circled in orange) to pick which variable to display. Below, precipitation is shown for 29 September 2021. 
+
+```{r echo = FALSE, out.width = "75%", fig.align = 'center'}
+knitr::include_graphics("figs/REACH_guide_app_4_visualize.jpg")
 ```
 
 
